@@ -86,10 +86,10 @@ public class Position {
     }
 
     public boolean isHorizontal(Position position) {
-        return position.x == this.x;
+        return position.x == this.x && position.y != this.y;
     }
 
     public boolean isVertical(Position position) {
-        return position.y == this.y;
+        return position.y == this.y && position.x != this.x;
     }
 }
