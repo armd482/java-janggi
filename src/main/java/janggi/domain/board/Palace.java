@@ -1,7 +1,6 @@
 package janggi.domain.board;
 
 import janggi.domain.Position;
-import java.util.List;
 import java.util.Set;
 
 public class Palace {
