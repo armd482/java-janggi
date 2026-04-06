@@ -24,7 +24,7 @@ public class JanggiService {
     }
 
     public List<GameResponseDto> getEntireGame() {
-        return gameRoomDao.findAllGames();
+        return transactionManager.sync(gameRoomDao::findAllGames);
     }
 
     public int addGameData(GameDto gameDto, List<PieceDto> pieceDtos) {
@@ -43,7 +43,9 @@ public class JanggiService {
     }
 
     public List<PieceDto> getPieceInitInfos(int gameId) {
-        return pieceDao.getAllPieces(gameId);
+        return transactionManager.sync(connection -> {
+            return pieceDao.getAllPieces(gameId, connection);
+        });
     }
 
     public void movePiece(int gameId, Position start, Position end, Side side, PieceType pieceType, TurnDto turnDto) {

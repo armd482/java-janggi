@@ -1,6 +1,5 @@
 package janggi.dao;
 
-import janggi.db.SQLManager;
 import janggi.dto.PieceDto;
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,13 +11,7 @@ public class PieceDao {
     private static final String FAILED_PIECE_UPDATE_MESSAGE = "기물 데이터 업데이트에 실패하였습니다.";
     private static final String FAILED_PIECE_DELETE_MESSAGE = "기물 데이터 삭제에 실패하였습니다.";
 
-    private final SQLManager sqlManager;
-
-    public PieceDao(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
-    }
-
-    public void initTable() {
+    public void initTable(Connection connection) {
         String sql =
         """
         CREATE TABLE IF NOT EXISTS Piece (
@@ -32,21 +25,19 @@ public class PieceDao {
         )
         """;
 
-        try (Connection conn = sqlManager.ensureConnection();
-             Statement stmt = conn.createStatement()) {
+        try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
-            if (!conn.getAutoCommit()) conn.commit();
+            if (!connection.getAutoCommit()) connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException(FAILED_TABLE_INIT_MESSAGE);
         }
     }
 
-    public List<PieceDto> getAllPieces(int gameId) {
+    public List<PieceDto> getAllPieces(int gameId, Connection connection) {
         List<PieceDto> pieces = new ArrayList<>();
         String sql = "SELECT * FROM Piece WHERE game_id = ?";
 
-        try (Connection conn = sqlManager.ensureConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setInt(1, gameId);
 

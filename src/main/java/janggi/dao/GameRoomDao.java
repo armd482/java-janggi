@@ -15,13 +15,7 @@ public class GameRoomDao {
     private static final String FAILED_GAME_ROOM_UPDATE_MESSAGE = "게임 방 데이터 업데이트에 실패하였습니다.";
     private static final String FAILED_GAME_ROOM_DELETE_MESSAGE = "게임 방 데이터 삭제에 실패하였습니다.";
 
-    private final SQLManager sqlManager;
-
-    public GameRoomDao(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
-    }
-
-    public void initTable() {
+    public void initTable(Connection connection) {
         String sql =
         """
         CREATE TABLE IF NOT EXISTS GameRoom (
@@ -34,10 +28,9 @@ public class GameRoomDao {
         )
         """;
 
-        try (Connection conn = sqlManager.ensureConnection();
-             Statement stmt = conn.createStatement()) {
+        try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
-            if (!conn.getAutoCommit()) conn.commit();
+            if (!connection.getAutoCommit()) connection.commit();
         } catch (SQLException e) {
             throw new RuntimeException(FAILED_TABLE_INIT_MESSAGE);
         }
@@ -69,11 +62,10 @@ public class GameRoomDao {
         return generatedId;
     }
 
-    public List<GameResponseDto> findAllGames() {
+    public List<GameResponseDto> findAllGames(Connection connection) {
         List<GameResponseDto> gameInfos = new ArrayList<>();
         String sql = "SELECT id, name, created_at, updated_at, side, turn FROM GameRoom";
-        try (Connection conn = sqlManager.ensureConnection();
-             Statement stmt = conn.createStatement();
+        try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
