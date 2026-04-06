@@ -21,12 +21,10 @@ public class Application {
         TransactionManager transactionManager = new TransactionManager(sqlManager);
 
         GameRoomDao gameRoomDao = new GameRoomDao();
-        transactionManager.sync(gameRoomDao::initTable);
-
         PieceDao pieceDao = new PieceDao();
-        transactionManager.sync(pieceDao::initTable);
 
         JanggiService janggiService = new JanggiService(transactionManager, gameRoomDao, pieceDao);
+        janggiService.initTable();
 
         Game game = new Game();
 

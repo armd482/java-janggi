@@ -23,6 +23,13 @@ public class JanggiService {
         this.pieceDao = pieceDao;
     }
 
+    public void initTable() {
+        transactionManager.sync(connection -> {
+            gameRoomDao.initTable(connection);
+            pieceDao.initTable(connection);
+        });
+    }
+
     public List<GameResponseDto> getEntireGame() {
         return transactionManager.sync(gameRoomDao::findAllGames);
     }
