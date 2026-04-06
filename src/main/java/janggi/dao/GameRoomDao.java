@@ -1,6 +1,5 @@
 package janggi.dao;
 
-import janggi.db.SQLManager;
 import janggi.dto.GameDto;
 import janggi.dto.GameResponseDto;
 import janggi.dto.TurnDto;
