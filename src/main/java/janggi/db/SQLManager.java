@@ -11,7 +11,7 @@ public class SQLManager {
     private static final int OPT_VALID_TIMEOUT = 500;
 
     private static final String FAILED_DB_CONNECT_MESSAGE = "DB 연결에 실패했습니다.";
-    private static final String FAILED_DB_CLOSE_MESSAGE = "DB 연결에 실패했습니다.";
+    private static final String FAILED_DB_CLOSE_MESSAGE = "DB 닫기에 실패했습니다.";
 
     private Connection connection = null;
     private final String url;
@@ -20,7 +20,7 @@ public class SQLManager {
         this.url = url;
     }
 
-    public Connection createConnection() {
+    public void createConnection() {
         try {
             Class.forName(SQLITE_JDBC_DRIVER);
             this.connection = DriverManager.getConnection(this.url);
@@ -32,7 +32,6 @@ public class SQLManager {
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(FAILED_DB_CONNECT_MESSAGE, e);
         }
-        return this.connection;
     }
 
     public void closeConnection() {
